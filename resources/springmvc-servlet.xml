@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:tx="http://www.springframework.org/schema/tx" xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xsi:schemaLocation="http://www.springframework.org/schema/aop 
+		http://www.springframework.org/schema/aop/spring-aop-3.2.xsd
+		http://www.springframework.org/schema/mvc 
+		http://www.springframework.org/schema/mvc/spring-mvc-3.2.xsd
+		http://www.springframework.org/schema/beans 
+		http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/tx 
+		http://www.springframework.org/schema/tx/spring-tx-3.2.xsd
+		http://www.springframework.org/schema/context 
+		http://www.springframework.org/schema/context/spring-context-3.2.xsd">
+
+	<!-- 1、扫描controller包，让这个类变控制器 -->
+	<context:component-scan base-package="cn.appsys.controller"/>
+	<!-- 让当前项目支持SpringMVC的注解， @Controller、@RequestMapping、@RequestParam -->
+	<!-- <mvc:annotation-driven/> -->
+	
+	<!-- 编写自定义转换器 -->
+	<mvc:annotation-driven conversion-service="myConversionService">
+		<!-- 配置消息转换器 -->
+		<mvc:message-converters>
+			
+			<bean class="org.springframework.http.converter.StringHttpMessageConverter">
+				<property name="supportedMediaTypes">
+					<list>
+						<value>application/json;charset=UTF-8</value>
+					</list>
+				</property>
+			</bean>
+			<bean class="com.alibaba.fastjson.support.spring.FastJsonHttpMessageConverter">
+				<property name="supportedMediaTypes">
+					<list>
+						<value>text/html;charset=UTF-8</value>
+						<value>application/json</value>
+					</list>
+				</property>
+				<property name="features">
+					<list>
+						<value>WriteDateUseDateFormat</value>
+					</list>
+				</property>
+			</bean>
+		</mvc:message-converters>
+	</mvc:annotation-driven>
+	<!-- 自定义转化器bean -->
+	<bean id="myConversionService" class="org.springframework.context.support.ConversionServiceFactoryBean">
+		<property name="converters">
+			<list>
+				<bean class="cn.appsys.tools.StringToDateConverter">
+					<constructor-arg type="java.lang.String" value="yyyy-MM-dd" />
+				</bean>
+			</list>
+		</property>
+	</bean>
+	
+	<!-- 配置SpringMVC的内部资源视图解析器 -->
+	<bean class="org.springframework.web.servlet.view.ContentNegotiatingViewResolver">
+		<property name="favorParameter" value="true" />
+		<property name="defaultContentType" value="text/html" />
+		<property name="mediaTypes">
+			<map>
+				<entry key="html" value="text/html;charset=UTF-8" />
+				<entry key="json" value="application/json;charset=UTF-8" />
+				<entry key="xml" value="application/xml;charset=UTF-8" />
+			</map>
+		</property>
+		<property name="viewResolvers">
+			<list>
+				<bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+					<property name="prefix" value="/WEB-INF/jsp/"></property>
+					<property name="suffix" value=".jsp"></property>
+				</bean>			
+			</list>
+		</property>
+	</bean>
+	
+	
+	<!-- 解决静态资源引用的问题 -->
+	<mvc:resources mapping="/statics/**" location="/statics/" />
+	<mvc:resources mapping="/uploadfiles/**" location="/uploadfiles/" />
+	 <!-- 全局异常处理 -->
+	 <bean class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver">
+		 <property name="exceptionMappings">
+		  		<props>
+		  			<prop key="java.lang.RuntimeException">login</prop>
+		  		</props>
+		  </property>
+	</bean>
+	<!-- 配置拦截器 -->
+	<!-- <mvc:interceptors>
+		<mvc:interceptor>
+			拦截所有控制器
+			<mvc:mapping path="/**"/>
+			不进行拦截的页面
+			<mvc:exclude-mapping path="index.jsp"/>
+			<mvc:exclude-mapping path="/statics/**"/>
+			<bean class="cn.lsl.interceptor.LoginInterceptor" />
+		</mvc:interceptor>
+	</mvc:interceptors> -->
+	<!-- 配置MultpartResoler文件上传解析器 -->
+	<bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+		<!-- 上传文件大小上限,单位为字节 -->
+		<property name="maxUploadSize" value="5000000" />
+		<property name="defaultEncoding" value="UTF-8" />
+	</bean>
+	
+	
+	
+	
+</beans>

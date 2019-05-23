@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.appsys.dao.AppInfo.AppInfoMapper">
+	<!-- 模糊查询 -->
+	<select id="getList">
+		SELECT `id`,`softwareName`,`APKName`,`softwareSize`,`downloads`,
+   			(SELECT `valueName` FROM `data_dictionary` WHERE `typeName`='所属平台' AND `valueId`=p.`flatformId`) AS '所属平台',
+   			(SELECT `categoryName` FROM `app_category` WHERE `id`=p.`categoryLevel1`) AS '一级分类',
+   			(SELECT `categoryName` FROM `app_category` WHERE `id`=p.`categoryLevel2`) AS '二级分类',
+   			(SELECT `categoryName` FROM `app_category` WHERE `id`=p.`categoryLevel3`) AS '三级分类',
+   			(SELECT `valueName` FROM `data_dictionary` WHERE `typeName`='APP状态' AND `valueId`=p.`status`) AS '软件状态',
+   			(SELECT `versionNo` FROM `app_version` WHERE `id`=p.`versionId`) AS '最新版本号'
+    	FROM `app_info` p
+	</select>
+</mapper>
+
+
+

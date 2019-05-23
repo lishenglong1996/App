@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:tx="http://www.springframework.org/schema/tx" xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xsi:schemaLocation="http://www.springframework.org/schema/aop 
+		http://www.springframework.org/schema/aop/spring-aop-3.2.xsd
+		http://www.springframework.org/schema/mvc 
+		http://www.springframework.org/schema/mvc/spring-mvc-3.2.xsd
+		http://www.springframework.org/schema/beans 
+		http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/tx 
+		http://www.springframework.org/schema/tx/spring-tx-3.2.xsd
+		http://www.springframework.org/schema/context 
+		http://www.springframework.org/schema/context/spring-context-3.2.xsd">
+
+	<!-- 1、读取database.properties配置文件，获取数据库连接信息 -->
+	<bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="location">
+			<value>classpath:database.properties</value>
+		</property>
+	</bean>
+	<!-- 2、配置数据源BasicDataSource -->
+	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource">
+		<property name="driverClassName" value="${driver}"/>
+		<property name="url" value="${url}"></property>
+		<property name="username" value="${username}"/>
+		<property name="password" value="${password}"></property>
+	</bean>
+	<!-- 3、创建SqlSessionFactoryBean实例对象 -->
+	<bean id="sqlSession" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<!-- 3.1 引入数据源对象 -->
+		<property name="dataSource" ref="dataSource"></property>
+		<!-- 3.2 引入mybatis的配置文件 -->
+		<property name="configLocation" value="classpath:mybatis-config.xml"></property>
+	</bean>
+	<!-- 4、使用MapperScannerConfigurer去简化DAO层的配置
+			好处：1、自动为cn.wj.dao下的所有接口创建其接口实现类以及实现类的bean实例对象。
+					  2、自动创建SqlSessionTemplate实例对象，并把这个对象注入给实现类的bean实例对象。
+	 -->
+	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+		<property name="basePackage" value="cn.appsys.dao"></property>
+	</bean>
+	<!-- 5、使用注解去简化Service层的配置，对cn.wj.service包里面的类进行扫描，让这些类支持
+		@Service、@Resource -->
+	<context:component-scan base-package="cn.appsys.service"/>
+	
+	<!-- 创建事务管理器 -->
+	<bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSource"></property>
+	</bean>
+	<!-- AOP事务处理 -->
+	<aop:aspectj-autoproxy />
+	<aop:config proxy-target-class="true">
+		<aop:pointcut expression="execution(* *cn.appsys.service..*(..))" id="transService"/>
+		<aop:advisor pointcut-ref="transService" advice-ref="txAdvice" />
+	</aop:config>
+	<tx:advice id="txAdvice" transaction-manager="transactionManager">
+		<tx:attributes>
+			<tx:method name="smbms*" propagation="REQUIRED" rollback-for="Exception" />
+		</tx:attributes>
+	</tx:advice>
+</beans>
