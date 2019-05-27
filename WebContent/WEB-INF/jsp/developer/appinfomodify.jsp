@@ -10,7 +10,8 @@
              <div class="clearfix"></div>
       </div>
       <div class="x_content">
-        <form class="form-horizontal form-label-left" action="appinfomodifysave" method="post" enctype="multipart/form-data">
+        <form class="form-horizontal form-label-left" action="${pageContext.request.contextPath}/app/appversion" method="post" enctype="multipart/form-data">
+          <input type="hidden" name='rep' value="update">
           <input type="hidden" name="id" id="id" value="${appInfo.id}">
           <div class="item form-group">
             <label class="control-label col-md-3 col-sm-3 col-xs-12" for="name">软件名称 <span class="required">*</span>
@@ -72,7 +73,9 @@
             <label class="control-label col-md-3 col-sm-3 col-xs-12"  for="select">所属平台 <span class="required">*</span></label>
             <div class="col-md-6 col-sm-6 col-xs-12">
               <input type="hidden" value="${appInfo.flatformId}" id="fid" />
-              <select name="flatformId" id="flatformId" class="form-control" required="required"></select>
+              <select name="flatformId" id="flatformId" class="form-control" required="required">
+              	
+              </select>
             </div>
           </div>
           
@@ -80,7 +83,9 @@
             <label class="control-label col-md-3 col-sm-3 col-xs-12" for="select">一级分类 <span class="required">*</span></label>
             <div class="col-md-6 col-sm-6 col-xs-12">
               <input type="hidden" value="${appInfo.categoryLevel1}" id="cl1" />
-              <select name="categoryLevel1" id="categoryLevel1" class="form-control"  required="required"></select>
+              <select name="categoryLevel1" id="categoryLevel1" class="form-control"  required="required">
+              	
+              </select>
             </div>
           </div>
           
@@ -88,7 +93,9 @@
             <label class="control-label col-md-3 col-sm-3 col-xs-12"  for="select">二级分类 <span class="required">*</span></label>
             <div class="col-md-6 col-sm-6 col-xs-12">
             	<input type="hidden" value="${appInfo.categoryLevel2}" id="cl2" />
-              <select name="categoryLevel2" id="categoryLevel2" class="form-control"  required="required"></select>
+              <select name="categoryLevel2" id="categoryLevel2" class="form-control"  required="required">
+              	
+              </select>
             </div>
           </div>
           
@@ -96,7 +103,9 @@
             <label class="control-label col-md-3 col-sm-3 col-xs-12" for="select">三级分类 <span class="required">*</span></label>
             <div class="col-md-6 col-sm-6 col-xs-12">
               <input type="hidden" value="${appInfo.categoryLevel3}" id="cl3" />
-              <select name="categoryLevel3" id="categoryLevel3" class="form-control"  required="required"></select>
+              <select name="categoryLevel3" id="categoryLevel3" class="form-control"  required="required">
+              	
+              </select>
             </div>
           </div>
           <div class="item form-group">
@@ -112,8 +121,7 @@
             </label>
             <div class="col-md-6 col-sm-6 col-xs-12">
               <textarea id="appInfo" name="appInfo" required="required"
-              placeholder="请输入本软件的相关信息，本信息作为软件的详细信息进行软件的介绍。" class="form-control col-md-7 col-xs-12">
-              ${appInfo.appInfo}</textarea>
+              placeholder="请输入本软件的相关信息，本信息作为软件的详细信息进行软件的介绍。" class="form-control col-md-7 col-xs-12">${appInfo.appInfo}</textarea>
             </div>
           </div>
            <div class="item form-group">
@@ -123,7 +131,7 @@
 				<input type="hidden" id="logoPicPath" name="logoPicPath" value="${appInfo.logoPicPath}"/>
             	<input type="hidden" id="logoLocPath" name="logoLocPath" value="${appInfo.logoLocPath}"/>
 				<div id="uploadfile" style="display: none">
-				<input id="attach"  type="file" class="form-control col-md-7 col-xs-12" name="attach">
+				<input id="attach"  type="file" class="form-control col-md-7 col-xs-12" name="a_logoPicPath">
 				<p><span style="color:red;font-weight: bold;">*注：1、大小不得超过500k.2、图片格式：jpg、png、jpeg、pneg</span></p>
 				</div>
 				<div id="logoFile"></div>

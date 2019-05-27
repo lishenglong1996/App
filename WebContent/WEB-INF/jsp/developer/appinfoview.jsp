@@ -94,8 +94,7 @@
             <label class="control-label col-md-3 col-sm-3 col-xs-12" for="textarea">应用简介 <span class="required">*</span>
             </label>
             <div class="col-md-6 col-sm-6 col-xs-12">
-              <textarea class="form-control col-md-7 col-xs-12" readonly="readonly"> 
-              ${appInfo.appInfo}</textarea>
+              <textarea class="form-control col-md-7 col-xs-12" readonly="readonly">${appInfo.appInfo}</textarea>
             </div>
           </div>
            <div class="item form-group">
@@ -107,7 +106,7 @@
 				    	暂无
 				  </c:when> 
 				  <c:otherwise>   
-				    <img src="${appInfo.logoPicPath }?m=1" width="100px;"/> 
+				    <img src="/ImageFile/${appInfo.logoPicPath}" width="100px;"/> 
 				  </c:otherwise> 
               </c:choose> 
             </div>

@@ -12,7 +12,7 @@ public class StringToDateConverter implements Converter<String, Date> {
 	
 	
 	public StringToDateConverter(String datePattern) {
-		System.err.println("StringToDateConverter "+datePattern);
+		
 		this.datePattern = datePattern;
 	}
 

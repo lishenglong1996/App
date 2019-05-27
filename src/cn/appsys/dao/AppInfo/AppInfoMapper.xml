@@ -4,16 +4,218 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="cn.appsys.dao.AppInfo.AppInfoMapper">
 	<!-- 模糊查询 -->
-	<select id="getList">
-		SELECT `id`,`softwareName`,`APKName`,`softwareSize`,`downloads`,
-   			(SELECT `valueName` FROM `data_dictionary` WHERE `typeName`='所属平台' AND `valueId`=p.`flatformId`) AS '所属平台',
-   			(SELECT `categoryName` FROM `app_category` WHERE `id`=p.`categoryLevel1`) AS '一级分类',
-   			(SELECT `categoryName` FROM `app_category` WHERE `id`=p.`categoryLevel2`) AS '二级分类',
-   			(SELECT `categoryName` FROM `app_category` WHERE `id`=p.`categoryLevel3`) AS '三级分类',
-   			(SELECT `valueName` FROM `data_dictionary` WHERE `typeName`='APP状态' AND `valueId`=p.`status`) AS '软件状态',
-   			(SELECT `versionNo` FROM `app_version` WHERE `id`=p.`versionId`) AS '最新版本号'
+	<select id="getList" resultType="AppInfo">
+		SELECT `id`,`softwareName`,`APKName`,`softwareSize`,`downloads`,`status`,`versionId`,
+   			(SELECT `valueName` FROM `data_dictionary` WHERE `typeName`='所属平台' AND `valueId`=p.`flatformId`) AS flatformName,
+   			(SELECT `categoryName` FROM `app_category` WHERE `id`=p.`categoryLevel1`) AS categoryLevel1Name,
+   			(SELECT `categoryName` FROM `app_category` WHERE `id`=p.`categoryLevel2`) AS categoryLevel2Name,
+   			(SELECT `categoryName` FROM `app_category` WHERE `id`=p.`categoryLevel3`) AS categoryLevel3Name,
+   			(SELECT `valueName` FROM `data_dictionary` WHERE `typeName`='APP状态' AND `valueId`=p.`status`) AS statusName,
+   			(SELECT `versionNo` FROM `app_version` WHERE `id`=p.`versionId`) AS versionNo
     	FROM `app_info` p
+    	<where>
+    		<if test="softwareName!=null and softwareName!=''">
+    			AND softwareName like CONCAT('%',#{softwareName},'%')
+    		</if>
+    		<if test="status!=null and status!=''">
+    			AND `status`=#{status}
+    		</if>
+    		<if test="flatform!=null and flatform!=''">
+    			AND `flatformId`=#{flatform} 
+    		</if>
+    		<if test="categoryLevel1!=null and categoryLevel1!=''">
+    			AND `categoryLevel1`=#{categoryLevel1} 
+    		</if>
+    		<if test="categoryLevel2!=null and categoryLevel2!=''">
+    			AND `categoryLevel2`=#{categoryLevel2} 
+    		</if>
+    		<if test="categoryLevel3!=null and categoryLevel3!=''">
+    			AND `categoryLevel3`=#{categoryLevel3} 
+    		</if>
+    	</where>
+    	ORDER BY `creationDate` DESC
+    	LIMIT #{pageIndex},#{pageSize};
 	</select>
+	<!-- 模糊查询总数 -->
+	<select id="getCount" resultType="Integer">
+		SELECT count(1) FROM `app_info`
+    	<where>
+    		<if test="softwareName!=null and softwareName!=''">
+    			AND softwareName like CONCAT('%',#{softwareName},'%')
+    		</if>
+    		<if test="status!=null and status!=''">
+    			AND `status`=#{status}
+    		</if>
+    		<if test="flatform!=null and flatform!=''">
+    			AND `flatformId`=#{flatform} 
+    		</if>
+    		<if test="categoryLevel1!=null and categoryLevel1!=''">
+    			AND `categoryLevel1`=#{categoryLevel1} 
+    		</if>
+    		<if test="categoryLevel2!=null and categoryLevel2!=''">
+    			AND `categoryLevel2`=#{categoryLevel2} 
+    		</if>
+    		<if test="categoryLevel3!=null and categoryLevel3!=''">
+    			AND `categoryLevel3`=#{categoryLevel3} 
+    		</if>
+    	</where>
+	</select>
+	<!-- 根据APK名称查询应用 -->
+	<select id="checkAPKName" resultType="Integer">
+		SELECT COUNT(1) FROM `app_info` WHERE `APKName`=#{apkName}
+	</select>
+	<!-- 新增应用 -->
+	<insert id="addApp" parameterType="AppInfo">
+		INSERT INTO `app_info` (
+		  `softwareName`,
+		  `APKName`,
+		  `supportROM`,
+		  `interfaceLanguage`,
+		  `softwareSize`,
+		  `devId`,
+		  `appInfo`,
+		  `status`,
+		  `flatformId`,
+		  `downloads`,
+		  `createdBy`,
+		  `creationDate`,
+		  `categoryLevel1`,
+		  `categoryLevel2`,
+		  `categoryLevel3`,
+		  `logoPicPath`
+		  
+		) 
+		VALUES
+		  (
+		  <!-- <if test="softwareName!=null and softwareName!=''"> -->
+		  	#{softwareName},	
+		 <!--  </if> -->
+		  <!-- <if test="APKName !=null and APKName!=''"> -->
+		  	#{APKName},
+		  <!-- </if> -->
+		  <!-- <if test="supportROM!=null and supportROM!=''"> -->
+		  	#{supportROM},
+		  <!-- </if> -->
+		  <!-- <if test="interfaceLanguage!=null and interfaceLanguage!=''"> -->
+		  	#{interfaceLanguage},	
+		 <!--  </if> -->
+		  <!-- <if test="softwareSize!=null and softwareSize!=''"> -->
+		  	#{softwareSize},	
+		 <!--  </if> -->
+		  <!-- <if test="devId!=null"> -->
+		  	#{devId},	
+		  <!-- </if> -->
+		 <!--  <if test="appInfo!=null"> -->
+		  	#{appInfo},
+		  <!-- </if> -->
+		  <!-- <if test="status!=null"> -->
+		  	#{status},	
+		  <!-- </if> -->
+		 <!--  <if test="flatformId!=null and flatformId!=''"> -->
+		  	#{flatformId},	
+		 <!--  </if> -->
+		  <!-- <if test="downloads!=null and downloads!=''"> -->
+		  	#{downloads},
+		  <!-- </if> -->
+		  <!-- <if test="createdBy!=null"> -->
+		  	#{createdBy},
+		 <!--  </if> -->
+		  <!-- <if test="creationDate!=null"> -->
+		  	#{creationDate},
+		  <!-- </if> -->
+		  <!-- <if test="categoryLevel1!=null"> -->
+		  	#{categoryLevel1},
+		  <!-- </if> -->
+		  <!-- <if test="categoryLevel2!=null"> -->
+		  	#{categoryLevel2},
+		  <!-- </if> -->
+		  <!-- <if test="categoryLevel3!=null"> -->
+		  	#{categoryLevel3},
+		  <!-- </if> -->
+		  <!-- <if test="logoPicPath!=null"> -->
+		  	#{logoPicPath}
+		  <!-- </if> -->
+		  )
+	</insert>
+	<!-- 根据id查询 -->
+	<select id="getAppByID" resultType="AppInfo">
+		SELECT `id`,`softwareName`,`APKName`,`supportROM`,`interfaceLanguage`,`downloads`,`softwareSize`,`flatformId`,`status`,`appInfo`,`categoryLevel1`,`categoryLevel2`,`categoryLevel3`,`logoPicPath`,
+			(SELECT `valueName` FROM `data_dictionary` WHERE `typeName`='所属平台' AND `valueId`=p.`flatformId`) AS flatformName,
+   			(SELECT `categoryName` FROM `app_category` WHERE `id`=p.`categoryLevel1`) AS categoryLevel1Name,
+   			(SELECT `categoryName` FROM `app_category` WHERE `id`=p.`categoryLevel2`) AS categoryLevel2Name,
+   			(SELECT `categoryName` FROM `app_category` WHERE `id`=p.`categoryLevel3`) AS categoryLevel3Name,
+			(SELECT `valueName` FROM `data_dictionary` WHERE `typeName`='APP状态' AND `valueId`=p.`status`) AS statusName
+    	FROM `app_info` p
+		WHERE id=#{appId}
+	</select>
+	<!-- 根据id修改图片 -->
+	<update id="updateFile">
+		UPDATE  `app_info` SET `logoPicPath` = NULL
+		WHERE `id` = #{appID};
+	</update>
+	<!-- 修改app信息 -->
+	<update id="updateAppInfo" parameterType="AppInfo">
+		UPDATE 
+		  `app_info` 
+		<set>
+			<if test="softwareName!=null and softwareName!=''">
+				`softwareName` = #{softwareName},	
+			</if>
+		  	<if test="APKName!=null and APKName!=''">
+				`APKName` = #{APKName},	
+			</if>
+		  	<if test="interfaceLanguage!=null and interfaceLanguage!=''">
+				`interfaceLanguage` = #{interfaceLanguage},	
+			</if>
+		  	<if test="softwareSize!=null ">
+				`softwareSize` = #{softwareSize},	
+			</if>
+		  	<if test="appInfo!=null">
+				`appInfo` = #{appInfo},	
+			</if>
+			<if test="onSaleDate!=null">
+				`onSaleDate`=#{onSaleDate},
+			</if>
+			<if test="offSaleDate!=null">
+				`offSaleDate`=#{offSaleDate},
+			</if>
+			<if test="status!=null">
+				`status` = #{status},	
+			</if>
+		  	<if test="flatformId!=null">
+				`flatformId` = #{flatformId},	
+			</if>
+		  	<if test="downloads!=null">
+				`downloads` = #{downloads},	
+			</if>
+		  	<if test="modifyBy!=null">
+				`modifyBy` = #{modifyBy},	
+			</if>
+		  	<if test="modifyDate!=null">
+				`modifyDate` = #{modifyDate},	
+			</if>
+		  	<if test="categoryLevel1!=null">
+				`categoryLevel1` = #{categoryLevel1},		
+			</if>
+		  	<if test="categoryLevel2!=null">
+				`categoryLevel2` = #{categoryLevel2},			
+			</if>
+		  	<if test="categoryLevel3!=null">
+				`categoryLevel3` = #{categoryLevel3},			
+			</if>
+		  	<if test="logoPicPath!=null">
+				`logoPicPath` = #{logoPicPath},		
+			</if>
+			<if test="versionId!=null">
+				`versionId` = #{versionId}			
+			</if>
+		</set>
+		WHERE `id` = #{id} ;
+	</update>
+	<!-- 删除app -->
+	<delete id="deleteApp">
+		DELETE FROM `app_info` WHERE `id` = #{appId}
+	</delete>
 </mapper>
 
 

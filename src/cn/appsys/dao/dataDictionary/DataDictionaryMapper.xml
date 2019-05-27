@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.appsys.dao.dataDictionary.DataDictionaryMapper">
+	<!-- 根据类型名称查找对象的id和名称 -->
+	<select id="getListByTypeName" resultType="DataDictionary">
+		 SELECT `valueId`,`valueName` FROM `data_dictionary` 
+		 WHERE `typeCode`=#{typeCode};
+	</select>
+</mapper>

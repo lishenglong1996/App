@@ -179,7 +179,7 @@ public class AppInfo {
 		return appInfo;
 	}
 	public void setAppInfo(String appInfo) {
-		this.appInfo = appInfo;
+		this.appInfo = appInfo.trim();
 	}
 	public Integer getStatus() {
 		return status;

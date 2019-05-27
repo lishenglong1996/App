@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.appsys.dao.AppVersion.AppversionMapper">
+	<!-- 根据appid查询版本信息 -->
+	<select id="getListByAppInfoId" resultType="AppVersion">
+		SELECT `id`,`appId`,`versionNo`,`versionSize`,`apkFileName`,`downloadLink`,`modifyDate`,
+  		  (SELECT `valueName` FROM `data_dictionary` WHERE `typeCode`='PUBLISH_STATUS' AND `valueId`=a.`publishStatus`) AS publishStatusName,
+		  (SELECT `softwareName` FROM `app_info` WHERE `id`=a.`appId`) AS appName
+		FROM `app_version` AS a 
+		WHERE `appId`=#{appId}
+	</select>
+	<!-- 新增版本信息 -->
+	<insert id="addAppver" useGeneratedKeys="true" keyProperty="id" parameterType="AppVersion">
+		INSERT INTO `app_version` (
+		  `appId`,
+		  `versionNo`,
+		  `versionInfo`,
+		  `publishStatus`,
+		  `downloadLink`,
+		  `versionSize`,
+		  `createdBy`,
+		  `creationDate`,
+		  `apkLocPath`,
+		  `apkFileName`
+		) 
+		VALUES
+		  (
+		    #{appId},
+		    #{versionNo},
+		    #{versionInfo},
+		    #{publishStatus},
+		    #{downloadLink},
+		    #{versionSize},
+		    #{createdBy},
+		    #{creationDate},
+		    #{apkLocPath},
+		    #{apkFileName}
+		  ) ;
+	</insert>
+	<!-- 根据id查询信息 -->
+	<select id="getAppversionById" resultType="AppVersion">
+		SELECT `id`,`versionNo`,`versionSize`,`versionInfo`,`downloadLink`,`apkLocPath`,`apkFileName` 
+		FROM `app_version` WHERE `id`=#{id}
+	</select>
+	<!-- 修改版本信息 -->
+	<update id="updateAppversion" parameterType="AppVersion">
+		UPDATE 
+		  `app_version` 
+		SET
+		  <if test="versionInfo!=null">
+		  	`versionInfo` = #{versionInfo},
+		  </if>
+		  <if test="downloadLink!=null">
+			`downloadLink` = #{downloadLink},
+		  </if>
+		  <if test="versionSize!=null">
+		  	 `versionSize` = #{versionSize},
+		  </if>
+		  <if test="modifyBy!=null">
+		  	`modifyBy` = #{modifyBy},
+		  </if>
+		  <if test="modifyDate!=null">
+		 	 `modifyDate` = #{modifyDate}, 	
+		  </if>
+		  <if test="apkLocPath!=null">
+		  	`apkLocPath` = #{apkLocPath},	
+		  </if>
+		  <if test="apkFileName!=null">
+		  	`apkFileName` = #{apkFileName}	
+		  </if>
+		WHERE `id` = #{id} ;
+	</update>
+	<!-- 修改版本图片 -->
+	<update id="deleteImage">
+		UPDATE 
+		  `app_version` 
+		SET
+		  `downloadLink` = NULL,
+		  `apkLocPath` = NULL,
+		  `apkFileName` = NULL 
+		WHERE `id` = #{id}
+	</update>
+	<!-- 根据APPID删除版本信息 -->
+	<delete id="deleteAppversion">
+		DELETE FROM `app_version` 
+		WHERE `appId` = #{appId}
+	</delete>
+</mapper>

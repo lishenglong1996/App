@@ -1,4 +1,4 @@
-package cn.appsys.dao.AppInfo;
+package cn.appsys.service.AppInfo;
 
 import java.util.List;
 
@@ -7,11 +7,11 @@ import org.apache.ibatis.annotations.Param;
 import cn.appsys.pojo.AppInfo;
 
 /**
- * app
+ * APP信息
  * @author Administrator
  *
  */
-public interface AppInfoMapper {
+public interface AppInfoService {
 	/**
 	 * 模糊查询
 	 * @param softwareName  软件名
@@ -34,6 +34,7 @@ public interface AppInfoMapper {
 			@Param("pageSize")Integer pageSize
 	);
 	
+
 	/**
 	 * 模糊查询数量
 	 * @param softwareName  软件名
@@ -51,7 +52,6 @@ public interface AppInfoMapper {
 			@Param("categoryLevel2")String categoryLevel2,
 			@Param("categoryLevel3")String categoryLevel3
 	);
-	
 	/**
 	 * 根据AKP名称查询应用是否存在
 	 * @param apkName
@@ -81,12 +81,10 @@ public interface AppInfoMapper {
 	 * @return
 	 */
 	public int updateAppInfo(AppInfo appInfo);
-	
 	/**
 	 * 删除app
 	 * @param appId
 	 * @return
 	 */
 	public int deleteApp(@Param("appId") String appId);
-	
 }

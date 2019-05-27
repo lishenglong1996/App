@@ -19,7 +19,8 @@
          </div>
        </div> -->
            <div class="clearfix"></div>
-        <form class="form-horizontal form-label-left" action="appinfoaddsave" method="post" enctype="multipart/form-data">
+        <form class="form-horizontal form-label-left" action="${pageContext.request.contextPath}/app/appversion" method="post" enctype="multipart/form-data">
+          <input type="hidden" name='rep' value="add">
           <div class="item form-group">
             <label class="control-label col-md-3 col-sm-3 col-xs-12" for="name">软件名称 <span class="required">*</span>
             </label>
@@ -78,14 +79,30 @@
           <div class="item form-group">
             <label class="control-label col-md-3 col-sm-3 col-xs-12"  for="select">所属平台 <span class="required">*</span></label>
             <div class="col-md-6 col-sm-6 col-xs-12">
-              <select name="flatformId" id="flatformId" class="form-control"   required="required"></select>
+              <select name="flatformId" id="flatformId" class="form-control"   required="required">
+              	<c:if test="${flatFormList != null }">
+					<option value="">--请选择--</option>
+						<c:forEach var="dataDictionary" items="${flatFormList}">
+					<option <c:if test="${dataDictionary.valueId == queryFlatformId }">selected="selected"</c:if>
+								value="${dataDictionary.valueId}">${dataDictionary.valueName}</option>
+						</c:forEach>
+				</c:if>
+              </select>
             </div>
           </div>
           
           <div class="item form-group">
             <label class="control-label col-md-3 col-sm-3 col-xs-12" for="select">一级分类 <span class="required">*</span></label>
             <div class="col-md-6 col-sm-6 col-xs-12">
-              <select name="categoryLevel1" id="categoryLevel1" class="form-control"   required="required"> </select>
+              <select name="categoryLevel1" id="categoryLevel1" class="form-control"   required="required">
+              	<c:if test="${categoryLevel1List != null }">
+					<option value="" selected="selected">--请选择--</option>
+						<c:forEach var="appCategory" items="${categoryLevel1List}">
+					<option <c:if test="${appCategory.id == queryCategoryLevel1 }">selected="selected"</c:if>
+								value="${appCategory.id}">${appCategory.categoryName}</option>
+						</c:forEach>
+				</c:if>
+               </select>
             </div>
           </div>
           
@@ -122,7 +139,7 @@
             </label>
             <div class="col-md-6 col-sm-6 col-xs-12">
             <input type="file" class="form-control col-md-7 col-xs-12" name="a_logoPicPath"  required="required" id="a_logoPicPath"/>
-            ${fileUploadError }
+            ${fileUploadError}
             </div>
           </div>
           <div class="ln_solid"></div>

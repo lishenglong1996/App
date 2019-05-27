@@ -1,7 +1,12 @@
+var pathName=window.document.location.pathname;
+//截取，得到项目名称
+var projectName=pathName.substring(0,pathName.substr(1).indexOf('/')+1);
+//查询一二三级分类
 function  loadCategoryLevel(pid,cl,categoryLevel){
+	
 	$.ajax({
 		type:"GET",//请求类型
-		url:"categorylevellist.json",//请求的url
+		url:projectName+"/AppCategory/categorylevellist",//请求的url
 		data:{pid:pid},//请求参数
 		dataType:"json",//ajax接口（请求url）返回的数据类型
 		success:function(data){//data：返回数据（json对象）
@@ -22,19 +27,19 @@ function  loadCategoryLevel(pid,cl,categoryLevel){
 		}
 	});
 }   
-
+//删除图片,修改数据图片为空
 function delfile(id){
 	$.ajax({
 		type:"GET",//请求类型
-		url:"delfile.json",//请求的url
-		data:{id:id,flag:'logo'},//请求参数
+		url:projectName+"/app/updateFile",//请求的url
+		data:{appId:id},//请求参数
 		dataType:"json",//ajax接口（请求url）返回的数据类型
 		success:function(data){//data：返回数据（json对象）
-			if(data.result == "success"){
+			if(data== true){
 				alert("删除成功！");
 				$("#uploadfile").show();
 				$("#logoFile").html('');
-			}else if(data.result == "failed"){
+			}else if(data==false){
 				alert("删除失败！");
 			}
 		},
@@ -46,9 +51,10 @@ function delfile(id){
 
 $(function(){  
 	//动态加载所属平台列表
+	
 	$.ajax({
 		type:"GET",//请求类型
-		url:"datadictionarylist.json",//请求的url
+		url:projectName+"/dic/getDic",//请求的url
 		data:{tcode:"APP_FLATFORM"},//请求参数
 		dataType:"json",//ajax接口（请求url）返回的数据类型
 		success:function(data){//data：返回数据（json对象）
@@ -116,7 +122,9 @@ $(function(){
 	if(logoPicPath == null || logoPicPath == "" ){
 		$("#uploadfile").show();
 	}else{
-		$("#logoFile").append("<p><img src=\""+logoPicPath+"?m="+Math.random()+"\" width=\"100px;\"/> &nbsp;&nbsp;"+
+		//<p><img src=\""+logoPicPath+"?m="+Math.random()+"\" width=\"100px;\"/> &nbsp;&nbsp;"+
+		//"<a href=\"javascript:;\" onclick=\"delfile('"+id+"');\">删除</a></p>
+		$("#logoFile").append("<p><img src='/ImageFile/"+logoPicPath+"' width=\"100px;\"/> &nbsp;&nbsp;"+
 							"<a href=\"javascript:;\" onclick=\"delfile('"+id+"');\">删除</a></p>");
 		
 	}

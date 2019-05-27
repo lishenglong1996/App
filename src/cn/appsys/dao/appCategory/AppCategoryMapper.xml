@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.appsys.dao.appCategory.AppCategoryMapper">
+	<!-- 查询一级分类 -->
+	<select id="getCategoryLevel1" resultType="AppCategory">
+		SELECT `id`,`categoryName` FROM `app_category`  WHERE `parentId` IS NULL
+	</select>
+	<!-- 查询二级分类 -->
+	<select id="getCategoryLevel2" resultType="AppCategory">
+		SELECT `id`,`categoryName`,`parentId` FROM `app_category` 
+		WHERE `parentId` IS NOT NULL AND `parentId`&lt;3
+	</select>
+	<!-- 查询三级分类 -->
+	<select id="getCategoryLevel3" resultType="AppCategory">
+		SELECT `id`,`categoryName`,`parentId` FROM `app_category` 
+		WHERE `parentId` IS NOT NULL AND `parentId`&gt;2
+	</select>
+	<!-- 根据父节点查询分类 -->
+	<select id="getAppCategoryByParent" resultType="AppCategory">
+		SELECT `id`,`categoryName` FROM `app_category` 
+		<where>
+			<if test="parentId==null and parentId==''">
+				`parentId` IS NULL
+			</if>
+			<if test="parentId!=null and parentId!=''">
+				`parentId`=#{parentId}
+			</if>
+		</where>
+		
+	</select>
+</mapper>

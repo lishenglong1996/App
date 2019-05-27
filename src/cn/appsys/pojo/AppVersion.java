@@ -72,7 +72,7 @@ public class AppVersion {
 		return versionInfo;
 	}
 	public void setVersionInfo(String versionInfo) {
-		this.versionInfo = versionInfo;
+		this.versionInfo = versionInfo.trim();
 	}
 	public Integer getPublishStatus() {
 		return publishStatus;
